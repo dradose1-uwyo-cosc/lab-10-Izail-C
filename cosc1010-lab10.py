@@ -1,12 +1,10 @@
-# Your Name Here
+# Izail Chamberlain
 # UWYO COSC 1010
-# Submission Date
-# Lab XX
-# Lab Section: 
-# Sources, people worked with, help given to: 
-# your
-# comments
-# here
+# Submission Date: 11/19/24
+# Lab 10
+# Lab Section: 11
+# Sources, people worked with, help given to: chatGPT utilized to help fix "Error: The file [insert file] was not found.", and formatting help to improve readability
+# N/A
 
 #import modules you will need 
 
@@ -43,3 +41,48 @@ def get_hash(to_hash):
 # Hash each individual password and compare it against the stored hash.
 # - When you find the match, print the plaintext version of the password.
 # - End your loop.
+
+
+from hashlib import sha256
+
+def get_hash(to_hash):
+    """Returns the SHA-256 hash of a given string in uppercase."""
+    return sha256(to_hash.encode('utf-8')).hexdigest().upper()
+
+def crack_password():
+    try:
+        # Opens/reads hash file
+        with open('hash.txt', 'r') as hash_file:
+            target_hash = hash_file.read().strip()  # Reads/removes extra spaces/newlines
+    except FileNotFoundError:
+        print("Error: The file 'hash.txt' was not found.")
+        return
+    except Exception as e:
+        print(f"Error: An unexpected error occurred while reading 'hash.txt': {e}")
+        return
+
+    try:
+        # Opens/read rockyou.txt file
+        with open('rockyou.txt', 'r') as password_file:
+            passwords = password_file.readlines()  # Reads lines into a list
+    except FileNotFoundError:
+        print("Error: The file 'rockyou.txt' was not found.")
+        return
+    except Exception as e:
+        print(f"Error: An unexpected error occurred while reading 'rockyou.txt': {e}")
+        return
+    else:
+        # Cracks the password
+        print("Attempting to crack password...")
+        for password in passwords:
+            password = password.strip()  # Removes extra spaces/newlines
+            hashed_password = get_hash(password)
+            if hashed_password == target_hash:
+                print(f"The password is: '{password}'")
+                break
+        else:
+            print("Password not found in the provided list.")
+
+# Runs program
+crack_password()
+
